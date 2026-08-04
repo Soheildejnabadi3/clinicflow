@@ -1,0 +1,47 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 1.5rem;
+  height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  gap: 0.25rem;
+
+  a {
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: none;
+
+    &:hover {
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+
+    &.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 550;
+    }
+  }
+}
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 4rem;
+}

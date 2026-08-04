@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Least privilege: the workflow only needs to read the repository.
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: API (.NET)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: clinicflow
+          POSTGRES_PASSWORD: clinicflow
+          POSTGRES_DB: clinicflow
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U clinicflow"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      # Fails the build on any package with a known vulnerability. This is what
+      # would have caught the AutoMapper 12.0.1 advisory.
+      - name: Audit NuGet dependencies
+        run: |
+          dotnet list package --vulnerable --include-transitive 2>&1 | tee audit.log
+          grep -q "has the following vulnerable packages" audit.log && exit 1 || exit 0
+
+      - name: Smoke test API against Postgres
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+          # Supplied via env rather than a file: ASP.NET Core maps the "__"
+          # separator onto nested configuration keys.
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=clinicflow;Username=clinicflow;Password=clinicflow"
+        run: |
+          dotnet run --configuration Release --no-build --launch-profile http &
+          API_PID=$!
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:5057/api/patients > /dev/null; then
+              echo "API is up"
+              curl -sf http://localhost:5057/api/appointments/dashboard > /dev/null
+              echo "Dashboard endpoint OK"
+              kill $API_PID
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API failed to start"
+          kill $API_PID 2>/dev/null
+          exit 1
+
+  ui:
+    name: UI (Angular)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: clinic-flow-ui
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: npm
+          cache-dependency-path: clinic-flow-ui/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Build
+        run: npx ng build
+
+      - name: Test
+        run: npx ng test --watch=false --browsers=ChromeHeadless

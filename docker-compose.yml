@@ -1,0 +1,27 @@
+# Local development database only.
+#
+# The credentials below are a throwaway sandbox account bound to localhost. They
+# are committed deliberately so the project runs with one command after cloning.
+# Never point this file at a real database, and never add a production
+# credential here -- see "Security" in README.md for where those belong.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: clinicflow-db
+    environment:
+      POSTGRES_USER: clinicflow
+      POSTGRES_PASSWORD: clinicflow
+      POSTGRES_DB: clinicflow
+    ports:
+      # Bound to 127.0.0.1 so the database is not exposed on the local network.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - clinicflow-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinicflow -d clinicflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  clinicflow-pgdata:

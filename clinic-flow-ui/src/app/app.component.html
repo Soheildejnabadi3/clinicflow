@@ -1,0 +1,12 @@
+<header class="topbar">
+  <a class="brand" routerLink="/dashboard">{{ title }}</a>
+  <nav>
+    @for (item of navItems; track item.path) {
+      <a [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+    }
+  </nav>
+</header>
+
+<main class="page">
+  <router-outlet />
+</main>

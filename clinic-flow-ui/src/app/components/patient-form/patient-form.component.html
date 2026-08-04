@@ -1,0 +1,46 @@
+<h1>{{ isEdit ? 'Edit patient' : 'New patient' }}</h1>
+
+@if (error) {
+  <div class="error-banner">{{ error }}</div>
+}
+
+<form class="card" [formGroup]="form" (ngSubmit)="submit()">
+  <div class="row">
+    <label>
+      First name
+      <input formControlName="firstName" />
+      @if (invalid('firstName')) { <small class="field-error">Required.</small> }
+    </label>
+    <label>
+      Last name
+      <input formControlName="lastName" />
+      @if (invalid('lastName')) { <small class="field-error">Required.</small> }
+    </label>
+  </div>
+
+  <label>
+    Email
+    <input type="email" formControlName="email" />
+    @if (invalid('email')) { <small class="field-error">Enter a valid email address.</small> }
+  </label>
+
+  <div class="row">
+    <label>
+      Phone
+      <input formControlName="phone" />
+      @if (invalid('phone')) { <small class="field-error">Required.</small> }
+    </label>
+    <label>
+      Date of birth
+      <input type="date" formControlName="dateOfBirth" />
+      @if (invalid('dateOfBirth')) { <small class="field-error">Required.</small> }
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="primary" [disabled]="saving">
+      {{ saving ? 'Saving…' : 'Save' }}
+    </button>
+    <button type="button" routerLink="/patients">Cancel</button>
+  </div>
+</form>

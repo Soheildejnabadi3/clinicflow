@@ -1,0 +1,69 @@
+<h1>Dashboard</h1>
+
+@if (error()) {
+  <div class="error-banner">{{ error() }}</div>
+}
+
+@if (loading()) {
+  <p class="muted">Loading…</p>
+}
+
+@if (stats(); as s) {
+  <div class="stat-grid">
+    <div class="card stat">
+      <span class="label">Patients</span>
+      <span class="value">{{ s.totalPatients }}</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Providers</span>
+      <span class="value">{{ s.totalProviders }}</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Today</span>
+      <span class="value">{{ s.todayAppointments }}</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Upcoming</span>
+      <span class="value">{{ s.upcomingAppointments }}</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Completed this week</span>
+      <span class="value">{{ s.completedThisWeek }}</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Cancelled this week</span>
+      <span class="value">{{ s.cancelledThisWeek }}</span>
+    </div>
+  </div>
+
+  <h2>Next appointments</h2>
+  @if (s.nextFiveAppointments.length === 0) {
+    <p class="muted">Nothing scheduled.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Patient</th>
+          <th>Provider</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (a of s.nextFiveAppointments; track a.id) {
+          <tr>
+            <td>{{ a.startTime | date: 'EEE d MMM, HH:mm' }}</td>
+            <td>{{ a.patientName }}</td>
+            <td>{{ a.providerName }} <span class="muted">· {{ a.providerSpecialty }}</span></td>
+            <td><span class="badge" [class]="'badge ' + statusClass(a.status)">{{ a.status }}</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <p class="links">
+    <a routerLink="/calendar">All appointments</a> ·
+    <a routerLink="/patients">Patients</a>
+  </p>
+}

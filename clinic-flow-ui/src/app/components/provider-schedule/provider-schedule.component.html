@@ -1,0 +1,41 @@
+<h1>Provider schedule</h1>
+
+@if (error) {
+  <div class="error-banner">{{ error }}</div>
+}
+
+@if (loading) {
+  <p class="muted">Loading providers…</p>
+} @else if (list.length === 0) {
+  <p class="muted">No providers yet.</p>
+} @else {
+  <table class="schedule">
+    <thead>
+      <tr>
+        <th>Provider</th>
+        @for (day of days; track day) {
+          <th>{{ day.substring(0, 3) }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (provider of list; track provider.id) {
+        <tr>
+          <td class="who">
+            <strong>{{ provider.fullName }}</strong>
+            <span class="muted">{{ provider.specialty }}</span>
+          </td>
+          @for (day of days; track day) {
+            <td class="slot">
+              @if (slotFor(provider, day); as hours) {
+                <span class="hours">{{ hours }}</span>
+              } @else {
+                <span class="off">—</span>
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+}

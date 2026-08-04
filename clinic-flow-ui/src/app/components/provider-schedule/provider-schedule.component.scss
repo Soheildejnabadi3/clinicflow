@@ -1,0 +1,33 @@
+.schedule {
+  font-size: 0.88rem;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+  min-width: 170px;
+
+  .muted {
+    font-size: 0.8rem;
+  }
+}
+
+.slot {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.hours {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.off {
+  color: var(--text-muted);
+}

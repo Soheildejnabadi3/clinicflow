@@ -1,0 +1,107 @@
+<h1>Appointments</h1>
+
+@if (error) {
+  <div class="error-banner">{{ error }}</div>
+}
+
+<div class="toolbar">
+  <button class="primary" (click)="showForm = !showForm">
+    {{ showForm ? 'Close' : 'Book appointment' }}
+  </button>
+</div>
+
+@if (showForm) {
+  <form class="card booking" [formGroup]="form" (ngSubmit)="book()">
+    <div class="row">
+      <label>
+        Patient
+        <select formControlName="patientId">
+          <option [value]="0" disabled>Select a patient…</option>
+          @for (p of patientOptions; track p.id) {
+            <option [value]="p.id">{{ p.fullName }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Provider
+        <select formControlName="providerId">
+          <option [value]="0" disabled>Select a provider…</option>
+          @for (p of providerOptions; track p.id) {
+            <option [value]="p.id">{{ p.fullName }} — {{ p.specialty }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="row">
+      <label>
+        Date
+        <input type="date" formControlName="date" />
+      </label>
+      <label>
+        Start
+        <input type="time" formControlName="startTime" />
+      </label>
+      <label>
+        End
+        <input type="time" formControlName="endTime" />
+      </label>
+    </div>
+
+    <label>
+      Notes
+      <input formControlName="notes" placeholder="Optional" />
+    </label>
+
+    <p class="muted hint">
+      Seeded providers work weekdays 09:00–17:00 <strong>UTC</strong> — the API
+      compares availability against the UTC clock, so the window shifts if your
+      machine is not on UTC. Bookings outside those hours, in the past, or
+      overlapping an existing appointment are rejected.
+    </p>
+
+    <div>
+      <button type="submit" class="primary" [disabled]="saving">
+        {{ saving ? 'Booking…' : 'Book' }}
+      </button>
+    </div>
+  </form>
+}
+
+@if (loading) {
+  <p class="muted">Loading appointments…</p>
+} @else if (list.length === 0) {
+  <p class="muted">No appointments yet.</p>
+} @else {
+  <table>
+    <thead>
+      <tr>
+        <th>When</th>
+        <th>Patient</th>
+        <th>Provider</th>
+        <th>Status</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of list; track a.id) {
+        <tr>
+          <td>
+            {{ a.startTime | date: 'EEE d MMM, HH:mm' }}–{{ a.endTime | date: 'HH:mm' }}
+          </td>
+          <td>{{ a.patientName }}</td>
+          <td>{{ a.providerName }}</td>
+          <td><span [class]="'badge ' + statusClass(a.status)">{{ a.status }}</span></td>
+          <td class="notes">{{ a.notes }}</td>
+          <td class="actions">
+            @if (isOpen(a)) {
+              <button (click)="complete(a)">Complete</button>
+              <button (click)="cancel(a)" class="danger">Cancel</button>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

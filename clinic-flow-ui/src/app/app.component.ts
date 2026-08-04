@@ -1,0 +1,19 @@
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss'
+})
+export class AppComponent {
+  readonly title = 'ClinicFlow';
+
+  readonly navItems = [
+    { path: '/dashboard', label: 'Dashboard' },
+    { path: '/patients', label: 'Patients' },
+    { path: '/calendar', label: 'Appointments' },
+    { path: '/schedule', label: 'Provider schedule' }
+  ];
+}

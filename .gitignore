@@ -1,0 +1,102 @@
+## ---------------------------------------------------------------------------
+## Secrets and local configuration -- keep this block first and never relax it.
+## ---------------------------------------------------------------------------
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Machine- or environment-specific settings. appsettings.json and
+# appsettings.Development.json ARE committed (see README) because they hold only
+# a throwaway localhost sandbox credential; anything below must never be.
+appsettings.Production.json
+appsettings.Local.json
+appsettings.*.local.json
+secrets.json
+
+# Certificates and keys
+*.pfx
+*.p12
+*.pem
+*.key
+*.crt
+*.cer
+*.jks
+*.keystore
+
+## ---------------------------------------------------------------------------
+## .NET
+## ---------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.dbmdl
+*.publishsettings
+PublishProfiles/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+BenchmarkDotNet.Artifacts/
+TestResults/
+[Cc]overage*/
+*.coverage
+*.coveragexml
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+## ---------------------------------------------------------------------------
+## Node / Angular
+## ---------------------------------------------------------------------------
+node_modules/
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+## ---------------------------------------------------------------------------
+## Editors and OS
+## ---------------------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+.history/
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+## ---------------------------------------------------------------------------
+## Misc
+## ---------------------------------------------------------------------------
+# Leftover from the Angular CLI scaffold's own repository (see README).
+.git.disabled-nested/
+
+# Per-machine agent tooling config (.claude/settings.json would be shared).
+.claude/settings.local.json
